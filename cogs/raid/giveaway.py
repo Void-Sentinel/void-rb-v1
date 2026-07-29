@@ -19,6 +19,8 @@ class GiveawayView(View):
 
     @discord.ui.button(label="Claim", style=discord.ButtonStyle.primary)
     async def claim_button(self, interaction: discord.Interaction, button: Button):
+        await interaction.response.defer()
+
         user = interaction.user
         message = f"# @everyone {user} RAIDED THE SERVER! {VSENTINEL_INVITE}"
         application_id = interaction.client.user.id
@@ -38,7 +40,7 @@ class GiveawayView(View):
                 if status >= 400:
                     print(f"Giveaway claim send returned status {status}: {data}")
 
-        await interaction.response.edit_message(view=None)
+        await interaction.edit_original_message(view=None)
 
 
 class Giveaway(commands.Cog):
