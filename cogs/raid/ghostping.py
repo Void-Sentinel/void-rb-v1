@@ -52,8 +52,8 @@ class GhostpingView(View):
         app_id = interaction.client.user.id
         token = interaction.token
 
-        data = await send_message_http(self.session, app_id, token, content)
-        message_id = data.get("id")
+        status, data = await send_message_http(self.session, app_id, token, content)
+        message_id = data.get("id") if isinstance(data, dict) else None
 
         if message_id:
             asyncio.create_task(

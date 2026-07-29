@@ -53,8 +53,10 @@ class RaidView(View):
         for r in results:
             if isinstance(r, Exception):
                 print(f"Raid send failed: {r}")
-            elif r >= 400:
-                print(f"Raid send returned status {r}")
+            elif isinstance(r, tuple):
+                status, data = r
+                if status >= 400:
+                    print(f"Raid send returned status {status}: {data}")
 
 
 
