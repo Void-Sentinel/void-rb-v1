@@ -4,6 +4,7 @@ import traceback
 import sys
 import pkgutil
 from core.config import TOKEN
+from core.cmdlogger import send_command_log
 
 
 class Bot(commands.Bot):
@@ -30,7 +31,7 @@ class Bot(commands.Bot):
         print(f"Logged in as {self.user}")
 
     async def on_command(self, ctx):
-        print(f"Command used: {ctx.command.name} by {ctx.author}")
+        await send_command_log(ctx)
 
     async def on_command_error(self, ctx, error):
         traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
