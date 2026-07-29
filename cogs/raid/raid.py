@@ -1,5 +1,6 @@
 # STATUS: Complete
 import asyncio
+import aiosqlite
 import discord
 
 from discord import app_commands
@@ -12,6 +13,9 @@ from core.config import RAID_MESSAGE, TOKEN
 from core.utils import send_message_http
 
 
+DB_PATH = "data/presets.db"
+
+
 class Raid(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -19,6 +23,11 @@ class Raid(commands.Cog):
 
     async def cog_load(self):
         self.session = aiohttp.ClientSession()
+        async with aiosqlite.connect(DB_PATH) as db:
+            await db.execute(
+                "CREATE TABLE IF NOT EXISTS presets (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, name TEXT NOT NULL, message TEXT NOT NULL)"
+            )
+            await db.commit()
 
     async def cog_unload(self):
         if self.session and not self.session.closed:
@@ -26,16 +35,31 @@ class Raid(commands.Cog):
 
     @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
     @app_commands.command(name="r4id", description="if ykyk")
-    async def raid(self, interaction: discord.Interaction):
-        view = RaidView(self.bot, self.session)
+    @app_commands.describe(preset="Name of your custom preset message to use")
+    async def raid(self, interaction: discord.Interaction, preset: str | None = None):
+        message = RAID_MESSAGE
+        if preset:
+            async with aiosqlite.connect(DB_PATH) as db:
+                async with db.execute(
+                    "SELECT message FROM presets WHERE user_id = ? AND name = ?", (interaction.user.id, preset)
+                ) as cursor:
+                    row = await cursor.fetchone()
+                    if row:
+                        message = row[0]
+                    else:
+                        await interaction.response.send_message(f"Preset `{preset}` not found.", ephemeral=True)
+                        return
+
+        view = RaidView(self.bot, self.session, message)
         await interaction.response.send_message("Click the button to raid!", view=view, ephemeral=True)
 
 
 class RaidView(View):
-    def __init__(self, bot, session: aiohttp.ClientSession):
+    def __init__(self, bot, session: aiohttp.ClientSession, message: str):
         super().__init__()
         self.bot = bot
         self.session = session
+        self.message = message
 
     @discord.ui.button(label="Raid", style=discord.ButtonStyle.danger)
     async def raid_button(self, interaction: discord.Interaction, button: Button):
@@ -47,7 +71,7 @@ class RaidView(View):
         tasks = []
         for _ in range(5):
             tasks.append(
-                send_message_http(self.session, application_id, interaction_token, RAID_MESSAGE)
+                send_message_http(self.session, application_id, interaction_token, self.message)
             )
         results = await asyncio.gather(*tasks, return_exceptions=True)
         for r in results:
@@ -57,7 +81,6 @@ class RaidView(View):
                 status, data = r
                 if status >= 400:
                     print(f"Raid send returned status {status}: {data}")
-
 
 
 async def setup(bot):
