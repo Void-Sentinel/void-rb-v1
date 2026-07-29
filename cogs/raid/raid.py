@@ -2,7 +2,7 @@
 import asyncio
 import aiosqlite
 import discord
-
+from pathlib import Path
 from discord import app_commands
 from discord.ext import commands
 from discord.ui import View, Button
@@ -13,7 +13,7 @@ from core.config import RAID_MESSAGE, TOKEN
 from core.utils import send_message_http
 
 
-DB_PATH = "data/presets.db"
+DB_PATH = Path(__file__).parent.parent.parent / "data" / "presets.db"
 
 
 class Raid(commands.Cog):
@@ -23,6 +23,7 @@ class Raid(commands.Cog):
 
     async def cog_load(self):
         self.session = aiohttp.ClientSession()
+        DB_PATH.parent.mkdir(parents=True, exist_ok=True)
         async with aiosqlite.connect(DB_PATH) as db:
             await db.execute(
                 "CREATE TABLE IF NOT EXISTS presets (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, name TEXT NOT NULL, message TEXT NOT NULL)"

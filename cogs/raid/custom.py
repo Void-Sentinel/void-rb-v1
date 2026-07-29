@@ -1,11 +1,12 @@
 import aiosqlite
 import discord
+from pathlib import Path
 from discord import app_commands
 from discord.ext import commands
 from discord.ui import View, Button, Modal, TextInput
 
 
-DB_PATH = "data/presets.db"
+DB_PATH = Path(__file__).parent.parent.parent / "data" / "presets.db"
 
 
 class PresetDB:
@@ -13,6 +14,7 @@ class PresetDB:
         self.db_path = db_path
 
     async def init(self):
+        self.db_path.parent.mkdir(parents=True, exist_ok=True)
         async with aiosqlite.connect(self.db_path) as db:
             await db.execute(
                 "CREATE TABLE IF NOT EXISTS presets (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, name TEXT NOT NULL, message TEXT NOT NULL)"
