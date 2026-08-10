@@ -65,7 +65,6 @@ class Giveaway(commands.Cog):
         embed = discord.Embed(
             title="Giveaway!",
             description=f"A giveaway for {prize_text} just started! Get a chance to win before someone else does.",
-            color=discord.Color.red()
         )
         view = GiveawayView(self.bot, self.session)
         await interaction.followup.send(embed=embed, view=view)

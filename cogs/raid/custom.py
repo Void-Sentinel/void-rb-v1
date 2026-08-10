@@ -131,7 +131,6 @@ class Custom(commands.Cog):
         embed = discord.Embed(
             title="Custom Message Manager",
             description="Manage your raid message presets",
-            color=discord.Color.red()
         )
         await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
 
