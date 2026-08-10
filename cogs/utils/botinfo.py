@@ -8,9 +8,23 @@ class BotInfo(commands.Cog):
         self.bot = bot
 
     @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
-    @app_commands.command(name="botinfo", description="Bot info - coming soon")
+    @app_commands.command(name="botinfo", description="Shows information about the bot")
     async def botinfo(self, interaction: discord.Interaction):
-        await interaction.response.send_message("Coming soon!", ephemeral=True)
+        cogs_loaded = ", ".join(sorted(self.bot.cogs.keys())) or "None"
+        commands_count = len(self.bot.tree.get_commands())
+        created_ts = int(self.bot.user.created_at.timestamp())
+
+        embed = discord.Embed(
+            description=(
+                "**Void Spam Bot**\n"
+                f"-# Version 2.0.5\n"
+                f"-# **Cogs Loaded:** {cogs_loaded}\n"
+                f"-# **Bot Created on <t:{created_ts}>**\n"
+                f"-# **Commands: `{commands_count}`**\n"
+                "-# **Developer:** Voby7\n"
+            ),
+        )
+        await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
 async def setup(bot):

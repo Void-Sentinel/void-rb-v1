@@ -38,6 +38,7 @@ class Raid(commands.Cog):
         closest = difflib.get_close_matches(preset, names, n=1, cutoff=0.5)
         return closest[0] if closest else None
 
+    async def cog_unload(self):
         if self.session and not self.session.closed:
             await self.session.close()
 
