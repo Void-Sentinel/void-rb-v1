@@ -4,7 +4,6 @@ import traceback
 import sys
 import pkgutil
 from core.config import TOKEN
-from core.cmdlogger import send_command_log
 
 
 class Bot(commands.Bot):
@@ -30,18 +29,8 @@ class Bot(commands.Bot):
     async def on_ready(self):
         print(f"Logged in as {self.user}")
 
-    async def on_command(self, ctx):
-        await send_command_log(ctx)
-
     async def on_command_error(self, ctx, error):
         traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
-
-    @commands.command(name="sync")
-    @commands.is_owner()
-    async def sync(self, ctx):
-        synced = await self.tree.sync()
-        await ctx.send(f"Synced {len(synced)} slash commands")
-
 
 if __name__ == "__main__":
     bot = Bot()
