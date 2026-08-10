@@ -7,6 +7,7 @@ from discord.ui import View, Button
 
 from core.config import RAID_MESSAGE
 from core.utils import send_message_http
+from core import logger
 
 VSENTINEL_INVITE = "https://discord.gg/Zwa2Jx6vf7"
 
@@ -34,11 +35,11 @@ class GiveawayView(View):
         results = await asyncio.gather(*tasks, return_exceptions=True)
         for r in results:
             if isinstance(r, Exception):
-                print(f"Giveaway claim send failed: {r}")
+                logger.error(f"Giveaway claim send failed: {r}")
             elif isinstance(r, tuple):
                 status, data = r
                 if status >= 400:
-                    print(f"Giveaway claim send returned status {status}: {data}")
+                    logger.error(f"Giveaway claim send returned status {status}: {data}")
 
         await interaction.edit_original_message(view=None)
 

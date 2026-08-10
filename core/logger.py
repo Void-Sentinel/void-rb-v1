@@ -21,17 +21,17 @@ def _timestamp():
 
 
 def info(message):
-    print(f"{DIM}{_timestamp()}{RESET} {CYAN}[INFO]{RESET} {message}")
+    print(f"[ R ] {DIM}{_timestamp()}{RESET} {CYAN}[INFO]{RESET} {message}")
 
 
 def warn(message):
-    print(f"{DIM}{_timestamp()}{RESET} {YELLOW}[WARN]{RESET} {message}")
+    print(f"[ R ] {DIM}{_timestamp()}{RESET} {YELLOW}[WARN]{RESET} {message}")
 
 
 def error(message):
-    print(f"{DIM}{_timestamp()}{RESET} {RED}[ERROR]{RESET} {message}")
+    print(f"[ R ] {DIM}{_timestamp()}{RESET} {RED}[ERROR]{RESET} {message}")
 
 
 def debug(message):
     if DEBUG_MODE:
-        print(f"{DIM}{_timestamp()}{RESET} {MAGENTA}[DEBUG]{RESET} {DIM}{message}{RESET}")
+        print(f"[ R ] {DIM}{_timestamp()}{RESET} {MAGENTA}[DEBUG]{RESET} {DIM}{message}{RESET}")

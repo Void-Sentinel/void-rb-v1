@@ -4,6 +4,7 @@ import traceback
 import sys
 import pkgutil
 from core.config import TOKEN
+from core import logger
 
 
 class Bot(commands.Bot):
@@ -18,18 +19,19 @@ class Bot(commands.Bot):
             if ispkg:
                 continue
             await self.load_extension(modname)
-            print(f"Loaded extension: {modname}")
+            logger.info(f"Loaded extension: {modname}")
 
         try:
             synced = await self.tree.sync()
-            print(f"Synced {len(synced)} slash commands")
+            logger.info(f"Synced {len(synced)} slash commands")
         except Exception as e:
-            print(f"Failed to sync commands: {e}")
+            logger.error(f"Failed to sync commands: {e}")
 
     async def on_ready(self):
-        print(f"Logged in as {self.user}")
+        logger.info(f"Logged in as {self.user}")
 
     async def on_command_error(self, ctx, error):
+        logger.error(f"Command error: {error}")
         traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
 if __name__ == "__main__":

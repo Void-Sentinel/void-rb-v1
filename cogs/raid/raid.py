@@ -13,6 +13,7 @@ import aiohttp
 
 from core.config import RAID_MESSAGE, TOKEN
 from core.utils import send_message_http
+from core import logger
 
 
 DB_PATH = Path(__file__).parent.parent.parent / "data" / "presets.db"
@@ -97,11 +98,11 @@ class RaidView(View):
         results = await asyncio.gather(*tasks, return_exceptions=True)
         for r in results:
             if isinstance(r, Exception):
-                print(f"Raid send failed: {r}")
+                logger.error(f"Raid send failed: {r}")
             elif isinstance(r, tuple):
                 status, data = r
                 if status >= 400:
-                    print(f"Raid send returned status {status}: {data}")
+                    logger.error(f"Raid send returned status {status}: {data}")
 
 
 async def setup(bot):
