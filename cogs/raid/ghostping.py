@@ -22,7 +22,7 @@ class Ghostping(commands.Cog):
             await self.session.close()
 
     @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
-    @app_commands.command(name="ghostping", description="Ghostping someone")
+    @app_commands.command(name="ghostping", description="Ping someone and remove the message")
     @app_commands.describe(user="The user to ghostping")
     async def ghostping(self, interaction: discord.Interaction, user: discord.User = None):
         target = user or interaction.user

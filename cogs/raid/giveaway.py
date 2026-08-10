@@ -56,7 +56,7 @@ class Giveaway(commands.Cog):
             await self.session.close()
 
     @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
-    @app_commands.command(name="fakegiveaway", description="Start a fake giveaway")
+    @app_commands.command(name="fakegiveaway", description="Create a fake giveaway and trick someone")
     @app_commands.describe(prize="The prize for the giveaway")
     async def fakegiveaway(self, interaction: discord.Interaction, prize: str | None = None):
         await interaction.response.send_message("making giveaway!", ephemeral=True)

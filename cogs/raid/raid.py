@@ -35,7 +35,7 @@ class Raid(commands.Cog):
             await self.session.close()
 
     @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
-    @app_commands.command(name="r4id", description="if ykyk")
+    @app_commands.command(name="r4id", description="The Command.")
     @app_commands.describe(preset="Name of your custom preset message to use")
     async def raid(self, interaction: discord.Interaction, preset: str | None = None):
         message = RAID_MESSAGE

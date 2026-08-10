@@ -125,7 +125,7 @@ class Custom(commands.Cog):
         await self.db.init()
 
     @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
-    @app_commands.command(name="custom-msg", description="Customize your raid messages")
+    @app_commands.command(name="custom-msg", description="[PREMIUM] Set a custom message.")
     async def custom_msg(self, interaction: discord.Interaction):
         view = PresetView(self.db, interaction.user.id)
         embed = discord.Embed(
