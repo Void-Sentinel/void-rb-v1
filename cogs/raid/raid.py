@@ -1,5 +1,7 @@
 # STATUS: Complete
 import asyncio
+import difflib
+
 import aiosqlite
 import discord
 from pathlib import Path
@@ -30,7 +32,12 @@ class Raid(commands.Cog):
             )
             await db.commit()
 
-    async def cog_unload(self):
+    def _find_similar(self, preset: str, names: list[str]) -> str | None:
+        if not names:
+            return None
+        closest = difflib.get_close_matches(preset, names, n=1, cutoff=0.5)
+        return closest[0] if closest else None
+
         if self.session and not self.session.closed:
             await self.session.close()
 
@@ -48,7 +55,15 @@ class Raid(commands.Cog):
                     if row:
                         message = row[0]
                     else:
-                        await interaction.response.send_message(f"Preset `{preset}` not found.", ephemeral=True)
+                        async with db.execute(
+                            "SELECT name FROM presets WHERE user_id = ?", (interaction.user.id,)
+                        ) as names_cursor:
+                            names = [r[0] for r in await names_cursor.fetchall()]
+                        similar = self._find_similar(preset, names)
+                        msg = f"Preset `{preset}` not found."
+                        if similar:
+                            msg += f" Perhaps you meant `{similar}`?"
+                        await interaction.response.send_message(msg, ephemeral=True)
                         return
 
         view = RaidView(self.bot, self.session, message)
