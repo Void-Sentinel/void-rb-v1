@@ -68,7 +68,11 @@ class Raid(commands.Cog):
                         return
 
         view = RaidView(self.bot, self.session, message)
-        await interaction.response.send_message("Click the button to raid!", view=view, ephemeral=True)
+        embed = discord.Embed(
+            title="Button Spam",
+            description="Press the button below to start the raid.",
+        )
+        await interaction.response.send_message("Click the button to raid!", view=view, embed=embed,ephemeral=True)
 
 
 class RaidView(View):
