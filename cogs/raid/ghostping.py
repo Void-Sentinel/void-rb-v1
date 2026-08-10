@@ -27,7 +27,11 @@ class Ghostping(commands.Cog):
     async def ghostping(self, interaction: discord.Interaction, user: discord.User = None):
         target = user or interaction.user
         view = GhostpingView(self.bot, self.session, target)
-        await interaction.response.send_message("Choose a ghostping option:", view=view, ephemeral=True)
+        embed = discord.Embed(
+            title="Ghost Ping",
+            description="Use the buttons below to ping everyone or the user.",
+        )
+        await interaction.response.send_message(view=view, embed=embed, ephemeral=True)
 
 
 class GhostpingView(View):
